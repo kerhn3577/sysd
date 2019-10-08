@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import statistics as stats
+import os as os 
+
+plt.close('all')
+
+def Tdata(g):
+    print('     Name '.ljust(10),      '       Temperature/K'.ljust(8),  '      Uncernainty'.ljust(10))
+    data=os.listdir()
+    nueva=[]
+    for i in data:
+        if '.tem' in i:
+            nueva.append(i)
+    d=sorted(nueva)
+    for i in d:
+        f=open(i,"r").readlines()
+        T=[]
+        for line in f:
+            j=line[10:16]
+            T.append(float(j))
+
+        t=[0.5*i for i in range(0,len(T))]
+        prom=round(stats.mean(T),3)
+        desv=np.sqrt(stats.variance(T))
+        sigm=round(desv,3)
+        print(  i,'      %1.3f              %1.3f'   % (prom,sigm ))
+        #Graphs
+
+        if g==True:
+            plt.figure(i)
+            plt.plot(t,T,'bo')
+            #plt.title(r'$Temperature control$',fontsize=14,fontweight='bold')
+            plt.xlabel('time/min')
+            plt.ylabel('Bath Temperature/C')
+            plt.annotate(r'$T={} \pm {}°$C'.format(prom,sigm),
+                     xy=(1, 0), xycoords='axes fraction',
+                     xytext=(0, 370), textcoords='offset pixels',
+                     horizontalalignment='right',           
+                     verticalalignment='bottom')         
+            plt.grid(True)
+            plt.show
+        else:
+            None
